@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Note_card from "./components/Note_card";
 
 const App = () => {
@@ -6,6 +6,15 @@ const App = () => {
   const [details, setDetails] = useState("");
 
   const [note, setnote] = useState([]);
+
+  const savedNotes = localStorage.getItem("notes");
+  useEffect(() => {
+    setnote(JSON.parse(savedNotes));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(note));
+  }, [note]);
 
   const formtitle = (e) => {
     setTitle(e.target.value);
@@ -72,11 +81,14 @@ const App = () => {
       </div>
       <div className="lg:min-w-[64%] flex gap-6  flex-wrap">
         {note.map(function (elem, idx) {
-          return <Note_card 
-          key={idx} 
-          text={elem.title} 
-          desc={elem.details}
-          onDelete={()=>deletenote(idx)} />;
+          return (
+            <Note_card
+              key={idx}
+              text={elem.title}
+              desc={elem.details}
+              onDelete={() => deletenote(idx)}
+            />
+          );
         })}
       </div>
     </div>
